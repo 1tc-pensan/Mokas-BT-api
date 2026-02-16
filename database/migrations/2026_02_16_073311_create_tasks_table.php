@@ -13,8 +13,19 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->enum('státusz', ['függőben', 'folyamatba', 'befejezett'])->default('függőben');
             $table->timestamps();
         });
+        /*
+        Hozz létre egy tasks táblát az alábbi oszlopokkal:
+○ id (auto-increment, primary key)
+○ title (VARCHAR, max 255 karakter) - A feladat megnevezése
+○ description (TEXT, opcionális) - A feladat leírása
+○ status (ENUM: pending, in_progress, completed) - a feladat állapota
+○ created_at, updated_at (timestamp)
+        */
     }
 
     /**
