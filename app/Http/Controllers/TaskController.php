@@ -21,33 +21,49 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $task = task::create($request->all());
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'státusz' => 'required|in:függőben,folyamatba,befejezett',
+        ]);
+        $task = task::create($validatedData);
         return response()->json($task, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(task $task)
+    public function show($id)
     {
-        return response()->json($task);
+        $task = task::findorfail($id);
+        if (!$task) {
+            return response()->json(['message' => 'Task not found'], 404);
+
+        }
+        return response()->json($task, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, task $task)
+    public function update(Request $request,$id)
     {
-        $task->update($request->all());
-        return response()->json($task);
+        $task = task::findorfail($id);
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'státusz' => 'required|in:függőben,folyamatba,befejezett',
+        ]);
+        $task->update($validatedData);
+        return response()->json($task,200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(task $task)
+    public function destroy($id)
     {
-        $task->delete();
-        return response()->json(null, 204);
+        task::destroy($id);
+        return response()->json(['message' => 'Task deleted successfully'], 200);
     }
 }
